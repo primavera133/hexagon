@@ -22,5 +22,4 @@ export function drawHexagon(
   ctx.closePath();
   ctx.fill();
   ctx.stroke();
-  //   ctx.rotate((90 * Math.PI) / 180);
 }

@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import { initGridData } from "../canvas/gridData";
 import { drawCanvas } from "../canvas/drawCanvas";
+import { gridSize } from "../canvas/constants";
 
 interface CanvasProps {
   canvasHeight?: number;
@@ -14,7 +15,7 @@ export const Canvas = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    initGridData(0, 50, 0, 50);
+    initGridData(0, gridSize.x, 0, gridSize.y);
     if (canvasRef.current) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
