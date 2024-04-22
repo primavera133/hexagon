@@ -7,3 +7,8 @@ export const gridSize = {
   x: 200,
   y: 150,
 };
+
+export const startCoords = {
+  x: 10,
+  y: 10,
+};
