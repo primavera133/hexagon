@@ -1,7 +1,8 @@
-import { useRef, useEffect, SyntheticEvent, useState } from "react";
-import { initGridData } from "../canvas/gridData";
-import { drawCanvas } from "../canvas/drawCanvas";
+import { useEffect, useRef, useState } from "react";
+import { clearCanvas } from "../canvas/clearCanvas";
 import { gridSize, startCoords } from "../canvas/constants";
+import { drawCanvas } from "../canvas/drawCanvas";
+import { initGridData } from "../canvas/gridData";
 
 interface CanvasProps {
   canvasHeight?: number;
@@ -16,26 +17,29 @@ export const Canvas = ({
   const [y, setY] = useState<number>(startCoords.y);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  let ctx: CanvasRenderingContext2D | null;
+  const ctx = useRef<CanvasRenderingContext2D | null>(null);
 
   useEffect(() => {
     initGridData(0, gridSize.x, 0, gridSize.y);
     if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      ctx = canvas.getContext("2d");
-      if (ctx == null) throw new Error("Could not get context");
-      drawCanvas(ctx, canvasWidth, canvasHeight, x, y);
+      ctx.current = canvasRef.current.getContext("2d");
+      if (ctx.current == null) throw new Error("Could not get context");
+
+      drawCanvas(ctx.current, canvasWidth, canvasHeight, x, y);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (ctx != null) {
-      drawCanvas(ctx, canvasWidth, canvasHeight, x, y);
+    if (canvasRef.current) {
+      if (ctx.current != null) {
+        clearCanvas(ctx.current, canvasWidth, canvasHeight);
+        drawCanvas(ctx.current, canvasWidth, canvasHeight, x, y);
+      }
     }
-  }, [x, y]);
+  }, [x, y, canvasHeight, canvasWidth]);
 
-  const handleKeyDown = (event: any) => {
-    console.log(event.key);
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLCanvasElement>) => {
     if (event.key === "a") {
       setX(x - 1);
     }
@@ -43,22 +47,21 @@ export const Canvas = ({
       setX(x + 1);
     }
     if (event.key === "q") {
-      setX(x - 1);
+      if (y % 2) setX(x - 1);
       setY(y - 1);
     }
     if (event.key === "e") {
-      setX(x + 1);
+      if (y % 2 === 0) setX(x + 1);
       setY(y - 1);
     }
     if (event.key === "z") {
-      setX(x - 1);
+      if (y % 2) setX(x - 1);
       setY(y + 1);
     }
     if (event.key === "c") {
-      setX(x + 1);
+      if (y % 2 === 0) setX(x + 1);
       setY(y + 1);
     }
-    console.log(x, y);
   };
 
   return (
@@ -67,8 +70,8 @@ export const Canvas = ({
       width={canvasWidth}
       height={canvasHeight}
       className="canvas"
-      onKeyDown={handleKeyDown}
       tabIndex={0}
+      onKeyDown={handleKeyDown}
     />
   );
 };

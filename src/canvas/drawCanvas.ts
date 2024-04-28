@@ -1,9 +1,17 @@
 import { drawHexagon } from "./drawHexagon";
 
-import { r, longCathetus, shortCathetus, startCoords } from "./constants";
+import { longCathetus, r, shortCathetus } from "./constants";
 import { drawCode } from "./drawCode";
 import { gridData } from "./gridData";
 import { isWithin } from "./isWithin";
+
+function moveX(x: number) {
+  return x * 2 * longCathetus;
+}
+
+function moveY(y: number) {
+  return y * (2 * r - shortCathetus); // return y + 1.5 * r
+}
 
 export const drawCanvas = (
   ctx: CanvasRenderingContext2D,
@@ -12,18 +20,10 @@ export const drawCanvas = (
   posX: number,
   posY: number,
 ) => {
-  function moveX(x: number) {
-    return x * 2 * longCathetus;
-  }
-
-  function moveY(y: number) {
-    return y * (2 * r - shortCathetus); // return y + 1.5 * r
-  }
-
   // let offsetX =  1.5 * longCathetus;
-  let offsetX = -longCathetus + 1.5 * longCathetus;
+  const offsetX = -longCathetus + 1.5 * longCathetus;
   // let offsetY = r;
-  let offsetY = 0;
+  const offsetY = 0;
 
   gridData.forEach((value, key) => {
     const xAdjust = (-1) ** value.y * (longCathetus / 2);
