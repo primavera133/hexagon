@@ -41,26 +41,26 @@ export const Canvas = ({
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLCanvasElement>) => {
     if (event.key === "a") {
-      setX(x - 1);
+      if (x > 0) setX(x - 1);
     }
     if (event.key === "d") {
-      setX(x + 1);
+      if (x < gridSize.x) setX(x + 1);
     }
     if (event.key === "q") {
-      if (y % 2) setX(x - 1);
-      setY(y - 1);
+      if (y % 2 && x > 0) setX(x - 1);
+      if (y > 0) setY(y - 1);
     }
     if (event.key === "e") {
-      if (y % 2 === 0) setX(x + 1);
-      setY(y - 1);
+      if (y % 2 === 0 && x < gridSize.x) setX(x + 1);
+      if (y > 0) setY(y - 1);
     }
     if (event.key === "z") {
-      if (y % 2) setX(x - 1);
-      setY(y + 1);
+      if (y % 2 && x > 0) setX(x - 1);
+      if (y < gridSize.y) setY(y + 1);
     }
     if (event.key === "c") {
-      if (y % 2 === 0) setX(x + 1);
-      setY(y + 1);
+      if (y % 2 === 0 && x < gridSize.x) setX(x + 1);
+      if (y < gridSize.y) setY(y + 1);
     }
   };
 
