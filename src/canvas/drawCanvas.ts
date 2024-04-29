@@ -21,9 +21,12 @@ export const drawCanvas = (
   posY: number,
 ) => {
   // let offsetX =  1.5 * longCathetus;
-  const offsetX = -longCathetus + 1.5 * longCathetus;
+  // const offsetXBase = -longCathetus + 1.5 * longCathetus;
+  const offsetX = -(posX * longCathetus * 2) + canvasWidth / 2;
   // let offsetY = r;
-  const offsetY = 0;
+  // const offsetY = 0;
+  const offsetY =
+    -(((4 * r - 2 * shortCathetus) * posY) / 2) + canvasHeight / 2;
 
   gridData.forEach((value, key) => {
     const xAdjust = (-1) ** value.y * (longCathetus / 2);

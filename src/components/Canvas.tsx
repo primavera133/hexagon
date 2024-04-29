@@ -3,16 +3,11 @@ import { clearCanvas } from "../canvas/clearCanvas";
 import { gridSize, startCoords } from "../canvas/constants";
 import { drawCanvas } from "../canvas/drawCanvas";
 import { initGridData } from "../canvas/gridData";
+import { useWindowSize } from "../hooks/useWindowSize";
 
-interface CanvasProps {
-  canvasHeight?: number;
-  canvasWidth?: number;
-}
+export const Canvas = () => {
+  const [canvasWidth, canvasHeight] = useWindowSize();
 
-export const Canvas = ({
-  canvasWidth = window.innerWidth,
-  canvasHeight = window.innerHeight,
-}: CanvasProps) => {
   const [x, setX] = useState<number>(startCoords.x);
   const [y, setY] = useState<number>(startCoords.y);
   const canvasRef = useRef<HTMLCanvasElement>(null);

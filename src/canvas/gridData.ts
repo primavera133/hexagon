@@ -25,8 +25,8 @@ export function initGridData(
     yStart,
     yEnd,
   };
-  for (let x = xStart; x < xEnd; x++) {
-    for (let y = yStart; y < yEnd; y++) {
+  for (let x = xStart; x <= xEnd; x++) {
+    for (let y = yStart; y <= yEnd; y++) {
       gridData.set(`${x}:${y}`, {
         x,
         y,
