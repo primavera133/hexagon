@@ -1,18 +1,30 @@
+import { produce } from "immer";
 import { useState } from "react";
 import { gridSize, startCoords } from "../canvas/constants";
 
-type NavigateProps = (
-  event: React.KeyboardEvent<HTMLCanvasElement>,
+interface NavigateProps {
+  event: React.KeyboardEvent<HTMLCanvasElement>;
+  x: number;
+  y: number;
+}
+
+type Navigate = ({ event, x, y }: NavigateProps) => void;
+
+type HookReturnValue = [
   x: number,
   y: number,
-) => void;
-
-type HookReturnValue = [x: number, y: number, navigate: NavigateProps];
+  trail: string[],
+  navigate: Navigate,
+];
 
 export const useNavigation = (): HookReturnValue => {
   const [x, setX] = useState<number>(startCoords.x);
   const [y, setY] = useState<number>(startCoords.y);
-  const navigate: NavigateProps = (event, x, y) => {
+  const [trail, setTrail] = useState<string[]>([
+    `${startCoords.x}:${startCoords.y}`,
+  ]);
+
+  const navigate: Navigate = ({ event, x, y }: NavigateProps) => {
     if (event.key === "a") {
       if (x > 0) setX(x - 1);
     }
@@ -35,7 +47,12 @@ export const useNavigation = (): HookReturnValue => {
       if (y % 2 === 0 && x < gridSize.x) setX(x + 1);
       if (y < gridSize.y) setY(y + 1);
     }
+    setTrail(
+      produce(trail, (draft) => {
+        draft.push(`${x}:${y}`);
+      }),
+    );
   };
 
-  return [x, y, navigate];
+  return [x, y, trail, navigate];
 };

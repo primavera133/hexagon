@@ -17,6 +17,7 @@ export const drawCanvas = (
   canvasHeight: number,
   posX: number,
   posY: number,
+  trail: string[],
 ) => {
   let offsetX = -(posX * hexWidth) + canvasWidth / 2;
   if ((-1) ** posY > 0) {
@@ -30,8 +31,11 @@ export const drawCanvas = (
     const x = offsetX + xAdjust + value.x * hexWidth;
     const y = offsetY + value.y * hexOffsetY;
     let fillStyle = "#6b9";
+
     if (value.x === posX && value.y === posY) {
       fillStyle = "#900";
+    } else if (trail.includes(`${value.x}:${value.y}`)) {
+      fillStyle = "#7ca";
     }
     if (isWithin(canvasWidth, canvasHeight, x, y)) {
       drawHexagon(ctx, x, y, fillStyle, "#174");

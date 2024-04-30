@@ -12,7 +12,7 @@ export const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
 
-  const [x, y, navigate] = useNavigation();
+  const [x, y, trail, navigate] = useNavigation();
 
   useEffect(() => {
     initGridData(0, gridSize.x, 0, gridSize.y);
@@ -20,7 +20,7 @@ export const Canvas = () => {
       ctx.current = canvasRef.current.getContext("2d");
       if (ctx.current == null) throw new Error("Could not get context");
 
-      drawCanvas(ctx.current, canvasWidth, canvasHeight, x, y);
+      drawCanvas(ctx.current, canvasWidth, canvasHeight, x, y, trail);
       canvasRef.current.focus();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -30,13 +30,13 @@ export const Canvas = () => {
     if (canvasRef.current) {
       if (ctx.current != null) {
         clearCanvas(ctx.current, canvasWidth, canvasHeight);
-        drawCanvas(ctx.current, canvasWidth, canvasHeight, x, y);
+        drawCanvas(ctx.current, canvasWidth, canvasHeight, x, y, trail);
       }
     }
   }, [x, y, canvasHeight, canvasWidth]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLCanvasElement>) => {
-    if (navigate) navigate(event, x, y);
+    if (navigate) navigate({ event, x, y });
   };
 
   return (
