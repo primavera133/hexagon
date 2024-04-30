@@ -21,6 +21,7 @@ export const Canvas = () => {
       if (ctx.current == null) throw new Error("Could not get context");
 
       drawCanvas(ctx.current, canvasWidth, canvasHeight, x, y);
+      canvasRef.current.focus();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
