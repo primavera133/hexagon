@@ -1,18 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { clearCanvas } from "../canvas/clearCanvas";
-import { gridSize, startCoords } from "../canvas/constants";
+import { gridSize } from "../canvas/constants";
 import { drawCanvas } from "../canvas/drawCanvas";
 import { initGridData } from "../canvas/gridData";
+import { useNavigation } from "../hooks/useNavigation";
 import { useWindowSize } from "../hooks/useWindowSize";
 
 export const Canvas = () => {
   const [canvasWidth, canvasHeight] = useWindowSize();
 
-  const [x, setX] = useState<number>(startCoords.x);
-  const [y, setY] = useState<number>(startCoords.y);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
+
+  const [x, y, navigate] = useNavigation();
 
   useEffect(() => {
     initGridData(0, gridSize.x, 0, gridSize.y);
@@ -36,28 +36,7 @@ export const Canvas = () => {
   }, [x, y, canvasHeight, canvasWidth]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLCanvasElement>) => {
-    if (event.key === "a") {
-      if (x > 0) setX(x - 1);
-    }
-    if (event.key === "d") {
-      if (x < gridSize.x) setX(x + 1);
-    }
-    if (event.key === "q") {
-      if (y % 2 && x > 0) setX(x - 1);
-      if (y > 0) setY(y - 1);
-    }
-    if (event.key === "e") {
-      if (y % 2 === 0 && x < gridSize.x) setX(x + 1);
-      if (y > 0) setY(y - 1);
-    }
-    if (event.key === "z") {
-      if (y % 2 && x > 0) setX(x - 1);
-      if (y < gridSize.y) setY(y + 1);
-    }
-    if (event.key === "c") {
-      if (y % 2 === 0 && x < gridSize.x) setX(x + 1);
-      if (y < gridSize.y) setY(y + 1);
-    }
+    if (navigate) navigate(event, x, y);
   };
 
   return (
