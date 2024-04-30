@@ -1,17 +1,15 @@
 import { drawHexagon } from "./drawHexagon";
 
-import { longCathetus, r, shortCathetus } from "./constants";
+import {
+  hexHeight,
+  hexOffsetY,
+  hexWidth,
+  longCathetus,
+  shortCathetus,
+} from "./constants";
 import { drawCode } from "./drawCode";
 import { gridData } from "./gridData";
 import { isWithin } from "./isWithin";
-
-function moveX(x: number) {
-  return x * 2 * longCathetus;
-}
-
-function moveY(y: number) {
-  return y * (2 * r - shortCathetus); // return y + 1.5 * r
-}
 
 export const drawCanvas = (
   ctx: CanvasRenderingContext2D,
@@ -20,18 +18,17 @@ export const drawCanvas = (
   posX: number,
   posY: number,
 ) => {
-  // let offsetX =  1.5 * longCathetus;
-  // const offsetXBase = -longCathetus + 1.5 * longCathetus;
-  const offsetX = -(posX * longCathetus * 2) + canvasWidth / 2;
-  // let offsetY = r;
-  // const offsetY = 0;
+  let offsetX = -(posX * hexWidth) + canvasWidth / 2;
+  if ((-1) ** posY > 0) {
+    offsetX -= longCathetus; // withdraw half a width of a hex for smoother diagonal movements
+  }
   const offsetY =
-    -(((4 * r - 2 * shortCathetus) * posY) / 2) + canvasHeight / 2;
+    -(((2 * hexHeight - 2 * shortCathetus) * posY) / 2) + canvasHeight / 2;
 
   gridData.forEach((value, key) => {
-    const xAdjust = (-1) ** value.y * (longCathetus / 2);
-    const x = offsetX + xAdjust + moveX(value.x);
-    const y = offsetY + moveY(value.y);
+    const xAdjust = (-1) ** value.y * (longCathetus / 2); // odd / even x-wise adjustment
+    const x = offsetX + xAdjust + value.x * hexWidth;
+    const y = offsetY + value.y * hexOffsetY;
     let fillStyle = "#6b9";
     if (value.x === posX && value.y === posY) {
       fillStyle = "#900";
