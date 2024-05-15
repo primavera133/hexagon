@@ -15,3 +15,8 @@ export const startCoords = {
   x: 10,
   y: 10,
 };
+
+export const targetCoords = {
+  x: 40,
+  y: 20,
+};

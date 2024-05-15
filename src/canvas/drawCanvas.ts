@@ -19,6 +19,7 @@ export const drawCanvas = (
   posY: number,
   trail: string[],
 ) => {
+  // console.log("trail", trail);
   let offsetX = -(posX * hexWidth) + canvasWidth / 2;
   if ((-1) ** posY > 0) {
     offsetX -= longCathetus; // withdraw half a width of a hex for smoother diagonal movements

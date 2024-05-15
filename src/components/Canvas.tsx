@@ -1,10 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { clearCanvas } from "../canvas/clearCanvas";
-import { gridSize } from "../canvas/constants";
 import { drawCanvas } from "../canvas/drawCanvas";
-import { initGridData } from "../canvas/gridData";
 import { useNavigation } from "../hooks/useNavigation";
 import { useWindowSize } from "../hooks/useWindowSize";
+import { worker } from "../webworker";
 
 export const Canvas = () => {
   const [canvasWidth, canvasHeight] = useWindowSize();
@@ -13,14 +12,18 @@ export const Canvas = () => {
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
 
   const [x, y, trail, navigate] = useNavigation();
+  const [path, setPath] = useState<string[]>([]);
+
+  const memoizedPath = useMemo(() => path, [path]);
+
+  worker.onmessage = (event) => {
+    setPath(event.data);
+  };
 
   useEffect(() => {
-    initGridData(0, gridSize.x, 0, gridSize.y);
     if (canvasRef.current) {
       ctx.current = canvasRef.current.getContext("2d");
       if (ctx.current == null) throw new Error("Could not get context");
-
-      drawCanvas(ctx.current, canvasWidth, canvasHeight, x, y, trail);
       canvasRef.current.focus();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -30,10 +33,10 @@ export const Canvas = () => {
     if (canvasRef.current) {
       if (ctx.current != null) {
         clearCanvas(ctx.current, canvasWidth, canvasHeight);
-        drawCanvas(ctx.current, canvasWidth, canvasHeight, x, y, trail);
+        drawCanvas(ctx.current, canvasWidth, canvasHeight, x, y, memoizedPath);
       }
     }
-  }, [x, y, canvasHeight, canvasWidth]);
+  }, [x, y, canvasHeight, canvasWidth, memoizedPath]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLCanvasElement>) => {
     if (navigate) navigate({ event, x, y });
