@@ -36,11 +36,10 @@ export function getLimitedGraphNodes(
   startCoords: Coord,
   endCoords: Coord,
 ) {
-  const filteredMap = filterMap(
+  return filterMap(
     gridGraphNodes,
     limitGraphNodesPredicate,
     startCoords,
     endCoords,
   );
-  return filteredMap;
 }

@@ -12,11 +12,11 @@ export const gridSize = {
 };
 
 export const startCoords = {
-  x: 10,
-  y: 10,
+  x: 50,
+  y: 50,
 };
 
 export const targetCoords = {
-  x: 40,
-  y: 20,
+  x: 150,
+  y: 50,
 };

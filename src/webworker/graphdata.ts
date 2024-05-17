@@ -63,6 +63,8 @@ export function gridGraphShortestPath(
   const prev = new Map<string, string>();
   const unvisited = new Set<string>();
 
+  const timing = Date.now();
+
   const limitedGraphNodes = getLimitedGraphNodes(
     gridGraphNodes,
     startCoords,
@@ -76,9 +78,6 @@ export function gridGraphShortestPath(
   });
 
   dist.set(start, 0);
-
-  const timing = Date.now();
-  console.log("timing", timing);
 
   let x = 0;
   while (unvisited.size > 0) {
@@ -103,7 +102,7 @@ export function gridGraphShortestPath(
     });
   }
 
-  console.log("timing revisited", Date.now() - timing);
+  console.log("timing", Date.now() - timing);
   console.log("x", x);
 
   const path: string[] = [];
