@@ -6,7 +6,7 @@ import {
   getNeighboursBottomRight,
   getNeighboursTopLeft,
   getNeighboursTopRight,
-} from "./graphdata";
+} from "./getNeighbours";
 
 type Coordinate = [number, number];
 
