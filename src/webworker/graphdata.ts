@@ -1,11 +1,44 @@
 import { GridData, GridMeta } from "../canvas/gridData";
+import { getLimitedGraphNodes } from "./filterGraphData";
 
-interface GraphEdge {
+export interface GraphEdge {
   target: string;
   weight: number;
 }
 
+export interface Coord {
+  x: number;
+  y: number;
+}
+
 export const gridGraphNodes = new Map<string, GraphEdge[]>();
+
+export const getNeighboursTopLeft = (x: number, y: number) => [
+  y % 2 ? x - 1 : x,
+  y - 1,
+];
+export const getNeighboursTopRight = (x: number, y: number) => [
+  y % 2 ? x : x + 1,
+  y - 1,
+];
+export const getNeighboursBottomLeft = (x: number, y: number) => [
+  y % 2 ? x - 1 : x,
+  y + 1,
+];
+export const getNeighboursBottomRight = (x: number, y: number) => [
+  y % 2 ? x : x + 1,
+  y + 1,
+];
+export function getNeighbours(x: number, y: number) {
+  return [
+    getNeighboursTopLeft(x, y),
+    getNeighboursTopRight(x, y),
+    [x - 1, y], // left
+    [x + 1, y], // right
+    getNeighboursBottomLeft(x, y),
+    getNeighboursBottomRight(x, y),
+  ];
+}
 
 export function initGraphData(
   gridData: Map<string, GridData>,
@@ -15,18 +48,12 @@ export function initGraphData(
   gridData.forEach((_, key) => {
     gridGraphAddNode(key);
   });
-  // Add edges to the graph
   let n = 0;
+  // Add edges to the graph
   gridData.forEach((_, key) => {
     const [x, y] = key.split(":").map(Number);
-    const neighbors = [
-      [y % 2 ? x : x - 1, y - 1], // top left
-      [y % 2 ? x : x + 1, y - 1], // top right
-      [x - 1, y], // left
-      [x + 1, y], // right
-      [y % 2 ? x : x - 1, y + 1], // bottom left
-      [y % 2 ? x : x + 1, y + 1], // bottom right
-    ];
+
+    const neighbors = getNeighbours(x, y);
     neighbors.forEach(([nx, ny]) => {
       n++;
 
@@ -62,7 +89,13 @@ export function gridGraphShortestPath(
   const prev = new Map<string, string>();
   const unvisited = new Set<string>();
 
-  gridGraphNodes.forEach((_, key) => {
+  const limitedGraphNodes = getLimitedGraphNodes(
+    gridGraphNodes,
+    startCoords,
+    endCoords,
+  );
+
+  limitedGraphNodes.forEach((_, key) => {
     dist.set(key, Infinity);
     prev.set(key, "");
     unvisited.add(key);
